@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050810">
+  <title>CandleScope AI — Candlestick & Crypto Chart Analysis</title>
+  <meta name="description" content="Drop a candlestick chart screenshot and let Gemini 3.5 Flash-Lite decode patterns, support and resistance, sentiment, and a complete trade setup.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%2308111d'/%3E%3Cpath%20d='M8%209v14M8%2012h4v8H8zM20%206v20M20%2010h4v11h-4z'%20fill='none'%20stroke='%23c8ff4d'%20stroke-width='1.6'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ambient ambient--lime" aria-hidden="true"></div>
+  <div class="ambient ambient--cyan" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="CandleScope AI home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M8 9v14M8 12h4v8H8zM20 6v20M20 10h4v11h-4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M14 16h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".45"/>
+          </svg>
+        </span>
+        <span class="brand-text">Candle<span>Scope</span><small>AI</small></span>
+      </a>
+
+      <div class="header-actions">
+        <span class="model-pill"><span class="model-dot"></span>Gemini 3.5 Flash-Lite</span>
+        <button class="header-btn" id="historyBtn" type="button" aria-label="Jump to recent scans">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M3.5 10a6.5 6.5 0 1 0 1.9-4.6M3.5 3.5V7H7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10 6.5V10l2.4 1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          <span>History</span>
+          <span class="count-badge" id="historyCount">0</span>
+        </button>
+        <button class="header-btn key-btn" id="headerKeyBtn" type="button" aria-label="Configure Gemini API key">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="7" cy="9" r="3.2" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M9.3 11.3 15.5 17.5M13 15l1.8-1.8M15.4 17.4l1.8-1.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          <span id="keyBtnLabel">API key</span>
+          <span class="key-dot" id="keyDot" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top" class="container">
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="eyebrow-line"></span>Vision-powered technical analysis</span>
+        <h1>Read the chart.<br><span class="gradient-text">Find the edge.</span></h1>
+        <p>Drop a candlestick screenshot and let Gemini 3.5 Flash-Lite decode patterns, key levels, sentiment, and a complete trade setup — in seconds.</p>
+        <div class="hero-badges">
+          <span><i></i>Pattern detection</span>
+          <span><i></i>Support &amp; resistance</span>
+          <span><i></i>Risk-aware setup</span>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-chart">
+          <svg viewBox="0 0 420 210" fill="none">
+            <defs>
+              <linearGradient id="heroLine" x1="20" y1="160" x2="400" y2="60" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#55e7ff" stop-opacity=".15"/>
+                <stop offset=".55" stop-color="#c8ff4d"/>
+                <stop offset="1" stop-color="#c8ff4d" stop-opacity=".7"/>
+              </linearGradient>
+              <linearGradient id="heroFill" x1="210" y1="50" x2="210" y2="190" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#c8ff4d" stop-opacity=".16"/>
+                <stop offset="1" stop-color="#c8ff4d" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <g stroke="rgba(148,180,226,.12)" stroke-width="1">
+              <path d="M20 45h380M20 85h380M20 125h380M20 165h380"/>
+              <path d="M70 25v160M150 25v160M230 25v160M310 25v160M390 25v160"/>
+            </g>
+            <path d="M20 168C52 160 62 140 90 144s42-36 70-30 40 24 68 10 38-46 70-42 44-28 68-32 30-22 54-32v152H20Z" fill="url(#heroFill)"/>
+            <path d="M20 168C52 160 62 140 90 144s42-36 70-30 40 24 68 10 38-46 70-42 44-28 68-32 30-22 54-32" stroke="url(#heroLine)" stroke-width="2" stroke-linecap="round"/>
+            <g class="hero-candles">
+              <path d="M92 92v40M92 100h10v24H92z" stroke="#48e6a0" stroke-width="1.5"/>
+              <path d="M122 82v50M122 92h10v28h-10z" stroke="#48e6a0" stroke-width="1.5"/>
+              <path d="M152 96v36M152 104h10v20h-10z" stroke="#ff5f7e" stroke-width="1.5"/>
+              <path d="M182 78v44M182 86h10v26h-10z" stroke="#48e6a0" stroke-width="1.5"/>
+              <path d="M212 84v38M212 92h10v20h-10z" stroke="#ff5f7e" stroke-width="1.5"/>
+              <path d="M242 66v40M242 74h10v22h-10z" stroke="#48e6a0" stroke-width="1.5"/>
+              <path d="M272 58v42M272 66h10v24h-10z" stroke="#48e6a0" stroke-width="1.5"/>
+              <path d="M302 48v36M302 56h10v18h-10z" stroke="#48e6a0" stroke-width="1.5"/>
+              <path d="M332 40v38M332 48h10v20h-10z" stroke="#ff5f7e" stroke-width="1.5"/>
+              <path d="M362 34v34M362 42h10v16h-10z" stroke="#48e6a0" stroke-width="1.5"/>
+            </g>
+            <circle cx="362" cy="42" r="3.5" fill="#c8ff4d"/>
+            <circle cx="362" cy="42" r="8" stroke="#c8ff4d" stroke-opacity=".28"/>
+          </svg>
+        </div>
+        <span class="hero-tag hero-tag--top"><span class="live-dot"></span>Bullish <b>78%</b></span>
+        <span class="hero-tag hero-tag--bottom">S/R mapped <b>04 levels</b></span>
+      </div>
+    </section>
+
+    <section class="workspace" aria-label="Chart analysis workspace">
+      <div class="panel upload-panel" id="uploadPanel">
+        <div class="panel-head">
+          <div>
+            <span class="section-kicker">01 / Chart input</span>
+            <h2>Upload your chart</h2>
+          </div>
+          <span class="panel-tag">PNG · JPG · WEBP</span>
+        </div>
+
+        <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Upload a chart screenshot. Drag and drop, click to browse, or paste from clipboard.">
+          <canvas class="preview-canvas" id="previewCanvas" aria-hidden="true"></canvas>
+
+          <div class="dropzone-empty" id="dropzoneEmpty">
+            <div class="upload-orbit">
+              <span class="orbit-ring"></span>
+              <span class="orbit-core">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M4.5 14.5v3A2.5 2.5 0 0 0 7 20h10a2.5 2.5 0 0 0 2.5-2.5v-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+              </span>
+            </div>
+            <h3>Drop your chart here</h3>
+            <p>or click to browse your files</p>
+            <div class="dropzone-hints">
+              <span class="hint"><kbd>Ctrl</kbd><span>/</span><kbd>⌘</kbd><span>+</span><kbd>V</kbd> to paste</span>
+              <span class="hint-divider"></span>
+              <span class="hint">Max 5MB</span>
+            </div>
+          </div>
+
+          <div class="image-chip" id="imageMeta" hidden>
+            <span class="live-dot"></span>
+            <span class="image-name" id="imageName">chart.png</span>
+            <span class="image-dims" id="imageDims">0 × 0</span>
+          </div>
+
+          <button class="remove-image" id="removeImageBtn" type="button" aria-label="Remove selected chart" hidden>
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+
+          <span class="corner corner--tl" aria-hidden="true"></span>
+          <span class="corner corner--tr" aria-hidden="true"></span>
+          <span class="corner corner--bl" aria-hidden="true"></span>
+          <span class="corner corner--br" aria-hidden="true"></span>
+
+          <div class="scan-overlay" id="scanOverlay" aria-hidden="true">
+            <div class="scan-grid"></div>
+            <div class="scan-laser"></div>
+            <div class="scan-frame-label">GEMINI // 3.5 LITE</div>
+            <div class="scan-readout">
+              <span class="scan-pulse"></span>
+              <span class="scan-label">VISION SCAN</span>
+              <span class="scan-status" id="scanReadout">UPLOADING CHART…</span>
+            </div>
+          </div>
+        </div>
+
+        <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" hidden>
+
+        <div class="analyze-row">
+          <button class="btn btn-primary analyze-btn" id="analyzeBtn" type="button" disabled>
+            <span class="spinner" aria-hidden="true"></span>
+            <span id="analyzeLabel">Analyze chart</span>
+            <svg class="btn-arrow" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M3 9h11M10 5l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="status-row" aria-live="polite">
+          <span class="status-dot" id="statusDot" data-tone="idle" aria-hidden="true"></span>
+          <span id="statusText">Waiting for a chart…</span>
+          <span class="status-model mono">gemini-3.5-flash-lite</span>
+        </div>
+
+        <div class="api-note" id="apiNote" data-state="missing">
+          <span class="api-note-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none">
+              <circle cx="7" cy="9" r="3.2" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M9.3 11.3 15.5 17.5M13 15l1.8-1.8M15.4 17.4l1.8-1.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <div class="api-note-copy">
+            <strong id="apiNoteTitle">Gemini API key required</strong>
+            <span id="apiNoteText">Add a key to enable chart vision.</span>
+          </div>
+          <button class="btn-link" id="openKeyBtn" type="button">Add key</button>
+        </div>
+      </div>
+
+      <div class="result-panel" id="resultPanel">
+        <div class="panel result-empty" id="resultEmpty">
+          <div class="empty-visual" aria-hidden="true">
+            <div class="radar">
+              <span class="radar-ring radar-ring--1"></span>
+              <span class="radar-ring radar-ring--2"></span>
+              <span class="radar-ring radar-ring--3"></span>
+              <span class="radar-sweep"></span>
+            </div>
+            <svg class="empty-chart" viewBox="0 0 300 160" fill="none">
+              <g stroke="rgba(148,180,226,.12)" stroke-width="1">
+                <path d="M12 35h276M12 75h276M12 115h276"/>
+                <path d="M60 16v128M130 16v128M200 16v128M270 16v128"/>
+              </g>
+              <path d="M20 130c34-6 36-30 62-26s36 22 64 4 30-48 58-44 34-22 58-28 24-16 30-20" stroke="#c8ff4d" stroke-width="1.6" stroke-linecap="round" stroke-opacity=".85"/>
+              <g class="empty-candles">
+                <path d="M74 70v42M74 78h9v26h-9z" stroke="#48e6a0" stroke-width="1.4"/>
+                <path d="M100 60v46M100 68h9v30h-9z" stroke="#48e6a0" stroke-width="1.4"/>
+                <path d="M126 76v38M126 84h9v22h-9z" stroke="#ff5f7e" stroke-width="1.4"/>
+                <path d="M152 54v44M152 62h9v28h-9z" stroke="#48e6a0" stroke-width="1.4"/>
+                <path d="M178 64v40M178 72h9v24h-9z" stroke="#ff5f7e" stroke-width="1.4"/>
+                <path d="M204 44v40M204 52h9v24h-9z" stroke="#48e6a0" stroke-width="1.4"/>
+                <path d="M230 34v38M230 42h9v22h-9z" stroke="#48e6a0" stroke-width="1.4"/>
+              </g>
+              <circle cx="270" cy="36" r="3" fill="#c8ff4d"/>
+            </svg>
+            <span class="float-tag float-tag--a"><span class="live-dot"></span>PATTERN FOUND</span>
+            <span class="float-tag float-tag--b">S/R MAPPED</span>
+          </div>
+          <span class="section-kicker">02 / Analysis output</span>
+          <h2>Your chart, decoded.</h2>
+          <p>Run a scan to surface market sentiment, candlestick patterns, support &amp; resistance, and a risk-aware trade setup.</p>
+          <div class="output-chips">
+            <span>Sentiment</span>
+            <span>Patterns</span>
+            <span>S / R levels</span>
+            <span>Trade setup</span>
+          </div>
+          <div class="empty-footnote"><span class="live-dot"></span>Vision analysis usually takes 5–15 seconds</div>
+        </div>
+
+        <article class="panel result-card" id="resultCard" hidden aria-hidden="true">
+          <header class="result-head">
+            <div class="result-title">
+              <span class="section-kicker">02 / Analysis output</span>
+              <div class="asset-row">
+                <h2 id="resAsset">—</h2>
+                <span class="tf-chip" id="resTimeframe">—</span>
+              </div>
+              <p class="result-time" id="resTimestamp">—</p>
+            </div>
+            <div class="sentiment-wrap">
+              <span class="sentiment-badge" id="sentimentBadge" data-sentiment="sideways">
+                <span class="sentiment-dot"></span>
+                <span id="sentimentText">Sideways</span>
+              </span>
+              <span class="sentiment-label">Market bias</span>
+            </div>
+          </header>
+
+          <div class="insight">
+            <div class="gauge" aria-hidden="true">
+              <svg viewBox="0 0 120 120">
+                <circle class="gauge-track" cx="60" cy="60" r="52"/>
+                <circle class="gauge-fill" id="confidenceRing" cx="60" cy="60" r="52" pathLength="100"/>
+              </svg>
+              <div class="gauge-value">
+                <span id="confidenceValue">0</span><span class="gauge-percent">%</span>
+                <small>confidence</small>
+              </div>
+            </div>
+            <div class="insight-copy">
+              <span class="mini-label">AI read</span>
+              <h3 id="verdictTitle">—</h3>
+              <p id="verdictCopy">—</p>
+            </div>
+            <div class="scan-stamp" aria-hidden="true">
+              <span class="mono">VISION</span>
+              <strong>GEMINI 3.5</strong>
+              <small>FLASH-LITE</small>
+            </div>
+          </div>
+
+          <div class="result-grid">
+            <section class="card patterns-card">
+              <div class="card-head">
+                <h3><span class="card-index">01</span>Detected patterns</h3>
+                <span class="card-count" id="patternCount">0</span>
+              </div>
+              <div class="pattern-list" id="patternList"></div>
+            </section>
+
+            <section class="card levels-card">
+              <div class="card-head">
+                <h3><span class="card-index">02</span>Key levels</h3>
+                <span class="card-count" id="levelsCount">0</span>
+              </div>
+              <div class="levels-grid" id="levelsGrid"></div>
+            </section>
+
+            <section class="card trade-card">
+              <div class="card-head">
+                <h3><span class="card-index">03</span>Trade setup</h3>
+                <span class="setup-risk">Risk-aware</span>
+              </div>
+              <div class="trade-grid" id="tradeGrid"></div>
+            </section>
+
+            <section class="card summary-card">
+              <div class="card-head">
+                <h3><span class="card-index">04</span>Analisis teknikal</h3>
+                <span class="lang-chip">Bahasa Indonesia</span>
+              </div>
+              <div class="prose" id="summaryContent"></div>
+            </section>
+          </div>
+
+          <div class="result-actions">
+            <button class="btn btn-secondary" id="exportBtn" type="button">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M9 2.5v9m0 0 3.5-3.5M9 11.5 5.5 8M3 13.5v1A1.5 1.5 0 0 0 4.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Download report
+            </button>
+            <button class="btn btn-ghost" id="copyBtn" type="button">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <rect x="6.5" y="6.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+                <path d="M11.5 4.5v-.5a1.5 1.5 0 0 0-1.5-1.5H4.5A1.5 1.5 0 0 0 3 4v5.5A1.5 1.5 0 0 0 4.5 11H5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+              Copy summary
+            </button>
+            <button class="btn btn-ghost" id="newScanBtn" type="button">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              New scan
+            </button>
+            <span class="result-disclaimer">Not financial advice. Always verify levels.</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="advisor-section" id="advisorSection" aria-labelledby="advisorTitle">
+      <div class="advisor-head">
+        <div>
+          <span class="section-kicker">03 / AI Financial Advisor</span>
+          <h2 id="advisorTitle">Chart-nya sudah dibaca. Sekarang tanya mentornya.</h2>
+        </div>
+        <p class="advisor-head-copy">Expert trader untuk teknikal, fundamental, dan psikologi pasar — dengan konteks chart terakhir dan fokus IDX Big Four.</p>
+      </div>
+
+      <div class="panel advisor-panel">
+        <aside class="advisor-side" aria-label="Advisor profile and active chart context">
+          <div class="advisor-profile">
+            <span class="advisor-avatar" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 17.5 8.5 12l3.5 3 3.5-5 4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".45"/>
+                <circle cx="18" cy="6" r="2.2" stroke="currentColor" stroke-width="1.4"/>
+              </svg>
+            </span>
+            <div class="advisor-profile-copy">
+              <span class="mini-label">Your mentor</span>
+              <h3>CandleScope Mentor</h3>
+              <p>Trader &amp; financial mentor</p>
+            </div>
+          </div>
+
+          <div class="advisor-tags" aria-label="Advisor expertise">
+            <span>Technical</span>
+            <span>Fundamental</span>
+            <span>Psychology</span>
+            <span>IDX Big Four</span>
+          </div>
+
+          <p class="advisor-bio">Tajam membaca struktur harga, suportif saat menjelaskan, dan objektif soal risiko. Fokus BMRI, BBCA, BBRI, BBNI.</p>
+
+          <div class="advisor-side-block">
+            <span class="mini-label">Active chart context</span>
+            <div class="advisor-context" id="advisorContextCard" data-state="empty">
+              <div class="advisor-context-thumb">
+                <img id="advisorContextThumb" alt="" hidden>
+                <span class="advisor-context-placeholder" id="advisorContextPlaceholder" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" stroke="currentColor" stroke-width="1.3"/>
+                    <path d="M7.5 15.5 10.5 12l2.5 2.4 2.4-3.2 1.6 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="advisor-context-live" id="advisorContextLive" hidden><span class="live-dot"></span>Image context</span>
+              </div>
+              <div class="advisor-context-body">
+                <div class="advisor-context-top">
+                  <strong class="advisor-context-asset" id="advisorContextAsset">Belum ada chart</strong>
+                  <span class="advisor-context-sentiment" id="advisorContextSentiment" data-sentiment="sideways" hidden>—</span>
+                </div>
+                <span class="advisor-context-meta" id="advisorContextMeta">Scan chart untuk mengaktifkan konteks visual.</span>
+                <span class="advisor-context-source" id="advisorContextSource" hidden></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="advisor-side-note">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="8" cy="8" r="5.8" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M8 7.2v3.2M8 5.4v.1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            <p>Riwayat chat hanya tersimpan di sesi ini. Refresh halaman akan mengosongkannya.</p>
+          </div>
+        </aside>
+
+        <div class="advisor-chat">
+          <header class="advisor-chat-head">
+            <div class="advisor-chat-title">
+              <span class="mini-label">Live consultation</span>
+              <h3>Ngobrol soal chart &amp; strategi</h3>
+            </div>
+            <div class="advisor-chat-tools">
+              <span class="advisor-status" id="advisorStatus" data-state="general">
+                <span class="live-dot" aria-hidden="true"></span>
+                <span id="advisorStatusText">Mode umum</span>
+              </span>
+              <button class="btn btn-ghost btn-small advisor-reset" id="advisorResetBtn" type="button" aria-label="Reset chat">
+                <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                  <path d="M3.5 9a5.5 5.5 0 1 0 1.6-3.9M3.5 3.5V6.8H6.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Reset
+              </button>
+            </div>
+          </header>
+
+          <div class="advisor-log" id="advisorLog">
+            <div class="advisor-messages" id="advisorMessages" role="log" aria-live="polite" aria-relevant="additions" aria-label="Chat with CandleScope Mentor"></div>
+            <div class="advisor-typing" id="advisorTyping" role="status" aria-live="polite" hidden>
+              <span class="advisor-avatar advisor-avatar--small" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M4 17.5 8.5 12l3.5 3 3.5-5 4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M4 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".45"/>
+                </svg>
+              </span>
+              <div class="advisor-typing-body">
+                <span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span id="advisorTypingLabel">Mentor sedang membaca chart…</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="advisor-suggestions" id="advisorSuggestions" aria-label="Suggested questions"></div>
+
+          <form class="advisor-composer" id="advisorForm">
+            <div class="advisor-input-wrap">
+              <textarea class="advisor-input" id="advisorInput" rows="1" maxlength="2000" placeholder="Tanya soal setup, level, atau psikologi market…" aria-label="Message to CandleScope Mentor"></textarea>
+              <button class="btn btn-primary advisor-send" id="advisorSendBtn" type="submit" disabled>
+                <span class="spinner" aria-hidden="true"></span>
+                <span id="advisorSendLabel">Kirim</span>
+                <svg class="advisor-send-icon" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                  <path d="M3 9h11M10 5l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+            <div class="advisor-composer-foot">
+              <span class="advisor-hint"><kbd>Enter</kbd> kirim · <kbd>Shift</kbd> + <kbd>Enter</kbd> baris baru</span>
+              <span class="advisor-counter" id="advisorCounter">0 / 2000</span>
+            </div>
+            <p class="advisor-disclaimer">Edukasi, bukan rekomendasi investasi. Selalu verifikasi level dan kelola risiko.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="history-section" id="historySection" aria-labelledby="historyTitle">
+      <div class="history-head">
+        <div>
+          <span class="section-kicker">04 / Archive</span>
+          <h2 id="historyTitle">Recent scans <span class="history-count" id="historyCountLabel">0 / 5</span></h2>
+        </div>
+        <button class="btn btn-ghost btn-small" id="clearHistoryBtn" type="button" hidden>
+          <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M3.5 5h11M7 5V3.5h4V5m-6 0 .6 9.5h6.8L13 5M7.5 8v4M10.5 8v4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Clear all
+        </button>
+      </div>
+      <div class="history-grid" id="historyGrid" hidden></div>
+      <div class="history-empty" id="historyEmpty">
+        <span class="history-empty-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M8 15V9m4 6V7m4 8v-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <p>No saved scans yet. Your last five analyses will live here.</p>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <p>Built for traders who read between the candles.</p>
+      <p class="mono">CandleScope AI · Vision by Gemini 3.5 Flash-Lite</p>
+    </footer>
+  </main>
+
+  <dialog class="key-dialog" id="keyDialog" aria-labelledby="keyDialogTitle">
+    <form class="key-form" id="keyForm" method="dialog">
+      <div class="dialog-head">
+        <span class="dialog-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none">
+            <circle cx="7" cy="9" r="3.2" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M9.3 11.3 15.5 17.5M13 15l1.8-1.8M15.4 17.4l1.8-1.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <div class="dialog-title">
+          <span class="section-kicker">Connection</span>
+          <h2 id="keyDialogTitle">Gemini API key</h2>
+        </div>
+        <button type="button" class="icon-btn" id="keyDialogClose" aria-label="Close API key dialog">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <p class="dialog-copy">CandleScope uses your own Gemini API key to analyze chart screenshots with Gemini 3.5 Flash-Lite. The key never touches our servers.</p>
+
+      <label class="field-label" for="apiKeyInput">API key</label>
+      <div class="key-input-wrap">
+        <input id="apiKeyInput" type="password" autocomplete="off" spellcheck="false" placeholder="AIza…">
+        <button type="button" class="input-action" id="toggleKeyVisibility">Show</button>
+      </div>
+
+      <label class="check-row">
+        <input type="checkbox" id="rememberKey" checked>
+        <span>Remember this key on this device</span>
+      </label>
+
+      <div class="dialog-note">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M5.5 7V5.5a2.5 2.5 0 0 1 5 0V7" stroke="currentColor" stroke-width="1.2"/>
+        </svg>
+        Stored in your browser and sent only to Google's Gemini API. For production, proxy requests server-side.
+      </div>
+
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" id="clearKeyBtn" type="button">Remove key</button>
+        <button class="btn btn-primary btn-compact" id="saveKeyBtn" type="submit">Save key</button>
+      </div>
+
+      <a class="dialog-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">
+        Get a free API key from Google AI Studio <span aria-hidden="true">↗</span>
+      </a>
+    </form>
+  </dialog>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="false"></div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

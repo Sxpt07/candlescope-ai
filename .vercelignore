@@ -1,0 +1,18 @@
+# Local-only tooling and docs (not part of the static site)
+.opencode/
+server.js
+start-server.bat
+README.md
+DEPLOY.md
+netlify.toml
+.gitignore
+.vercelignore
+
+# Generated output is rebuilt by `node scripts/build-static.js`
+# (public/ is intentionally not ignored here so a local build can be inspected)
+
+# Dependencies / local files
+node_modules/
+*.log
+.env
+.env.*

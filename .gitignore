@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Generated deployment output
+public/
+dist/
+
+# Hosting tooling
+.vercel/
+.netlify/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
